@@ -51,6 +51,7 @@ let QiniuList = React.createClass({
                     ret: result.ret,
                     prefix: result.prefix,
                     domain: result.domain,
+                    selectItem:{}
                 })
 
             }
