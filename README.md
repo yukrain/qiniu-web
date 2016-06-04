@@ -6,3 +6,8 @@
 #### 配置config
 
 拷贝config_sample.js并配置七牛参数
+
+#### 安装
+```
+npm install
+```
