@@ -340,6 +340,9 @@ body{
     margin: 0;
     padding: 0;
 }
+.file-preview-content .qiniu-card-preview-icon{
+    font-size: 30px;
+}
 .file-preview-title{
     font-size: 16px;
     font-weight: 900;
