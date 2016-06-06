@@ -226,7 +226,7 @@ body{
 }
 .qiniu-card,.qiniu-folder{
     position: relative;
-    margin: 14px 0px 14px 20px;
+    margin: 14px 10px 14px 10px;
     text-align: center;
     float: left;
     overflow: hidden;
@@ -263,10 +263,10 @@ body{
 }
 .qiniu-card-filesize{
     margin: 3px 0;
-    color: #dd202b;
+    color: #999;
 }
 .qiniu-card-time{
-    color: #999;
+    color: #717171;
 }
 .qiniu-card-hide{
     position: absolute;
@@ -292,9 +292,28 @@ body{
     border: 1px solid #35b250;
 }
 .qiniu-card:hover .qiniu-card-hide{
-    height:56px
+    height:56px;
+}
+.qiniu-card.checked .qiniu-card-box{
+    border: 1px solid #35b250;
+}
+.qiniu-card.checked:hover  .qiniu-card-hide{
+    height:0px;
+    transition: none;
+}
+.qiniu-card.checked>a{border:1px solid #35b250;box-shadow:0 1px 8px #28883d}
+.qiniu-card.checked:after{
+    content:'已选择';
+    display: block;
+    background-color:#35b250;
+    color: #ffffff;
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    line-height: 26px;
 
 }
+
 .qiniu-card-preview-icon{
     padding-top: 10px;
     color: #659f13;
@@ -320,8 +339,13 @@ body{
     border-radius: 4px;
     margin-bottom: 10px;
 }
+.file-preview-info p{
+    margin: 10px 0;
+    color: #8d8d8d;
+    word-break: break-all;
+}
 .file-preview-content{
-    margin: 0 0 20px 0;
+    margin: 10px 0 20px 0;
     min-height: 100px;
     white-space: nowrap;
     text-align: center;
@@ -348,20 +372,24 @@ body{
 }
 .file-preview-title{
     font-size: 16px;
+    line-height: 16px;
     font-weight: 900;
-    color: #478ede;
+    color: #dd5b54;
     word-wrap: break-word;
     -webkit-hyphens: auto;
     -ms-hyphens: auto;
     -moz-hyphens: auto;
     hyphens: auto;
+    margin: 10px 0;
+    word-break: break-all;
 }
+
 .file-preview-buttons{
     margin-top: 10px;
 }
 .file-preview-buttons button{
-    margin-right: 4px;
-    margin-top: 8px;
+    /*margin-right: 4px;*/
+    /*margin-top: 8px;*/
 }
 .qiniu-card-folder{
     color: #385068;

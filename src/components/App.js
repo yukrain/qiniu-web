@@ -1,4 +1,4 @@
-import { Alert, Badge,Breadcrumb,  Radio, Table, Icon, Form,Affix, Modal, InputNumber, DatePicker, Spin, message, Row, Col, Select, Input, Button} from 'antd';
+import { Alert, Badge,Breadcrumb,  Radio, Table, Icon, Form,Affix, Modal, InputNumber, DatePicker, Spin, Row, Col, Select, Input, Button, message} from 'antd';
 import QueueAnim from 'rc-queue-anim'
 import reqwest from 'reqwest';
 import moment from 'moment';
@@ -12,7 +12,7 @@ let QiniuList = React.createClass({
 
     getInitialState() {
         return {
-            show: false,
+            loading: true,
             bucket: 'dayu-static',
             date: moment().format('YYYY-MM-DD'),
             prefix: "",
@@ -35,7 +35,16 @@ let QiniuList = React.createClass({
     fetchFather(){
         this.fetchData(  this.getParentsPrefix(this.state.prefix)[1] );
     },
+
+    handleClickReload(){
+        this.reloadData();
+    },
+
+    reloadData(){
+        this.fetchData(this.state.prefix);
+    },
     fetchData(prefix = ''){
+        this.setState({loading: true});
         reqwest({
             url:'/api/list',
             method: 'get',
@@ -46,10 +55,15 @@ let QiniuList = React.createClass({
             crossOrigin: true,
             type: 'json',
             error: (err) => {
+                message.error('加载失败');
+                this.setState({
+                    loading: false
+                })
             },
             success: (result) => {
+                message.success('刷新成功');
                 this.setState({
-                    show: false,
+                    loading: false,
                     ret: result.ret,
                     prefix: result.prefix,
                     domain: result.domain,
@@ -81,19 +95,8 @@ let QiniuList = React.createClass({
         return result;
     },
 
-    hideSlide(){
-        this.setState({
-            show: false
-        })
-    },
-
-    test(){
-        this.getAllParentsPrefixArray(this.state.prefix)
-    },
-
     handleSelect(item){
         this.setState({
-            show: true,
             selectItem: item
         })
     },
@@ -107,6 +110,7 @@ let QiniuList = React.createClass({
         return <div className="ant-layout-aside">
             <div className="ant-layout-header">
                 <span>七牛文件管理工具</span>
+
                 <ul className="right">
                     <li>{this.state.date}</li>
                     <li>|</li>
@@ -124,9 +128,18 @@ let QiniuList = React.createClass({
 
                     </Col>
                     <Col className="gutter-row" span={16}>
-                        <Breadcrumb separator=">">
-                            {breadcrumb}
-                        </Breadcrumb>
+
+                        <Row>
+                            <Col span={20} style={{paddingLeft:10}}>
+                                <Breadcrumb separator=">" >
+                                    {breadcrumb}
+                                </Breadcrumb>
+                            </Col>
+                            <Col span={4} style={{textAlign: "center"}}>
+                                <Button  type="primary" icon="reload" onClick={this.handleClickReload} loading={this.state.loading}  >刷新</Button>
+                            </Col>
+                        </Row>
+
 
                         <div>
                             <div key="1">
@@ -144,7 +157,7 @@ let QiniuList = React.createClass({
                                 }
                                 {
                                     this.state.ret.items.map( item =>{
-                                        return <QiniuCard edit onClick={this.handleSelect} domain={this.state.domain} key={item.key} item={item}/>
+                                        return <QiniuCard checked={item.key == this.state.selectItem.key} onClick={this.handleSelect} domain={this.state.domain} key={item.key} item={item}/>
 
                                     })
 
@@ -152,22 +165,20 @@ let QiniuList = React.createClass({
                             </div>
                         </div>
                     </Col>
-                    <Col className="gutter-row" span={6} style={{paddingTop:30}}>
-                        <QiniuUploader bucket={this.state.bucket}  prefix={this.state.prefix}/>
+                    <Col className="gutter-row" span={6} style={{paddingTop:32}}>
+
+                        <QiniuUploader bucket={this.state.bucket}
+                                       prefix={this.state.prefix}
+                                       onSuccess = {this.reloadData}
+                        />
                         <Affix offsetTop={10}>
-                            <QiniuPreview key={this.state.selectItem.key}  domain={this.state.domain} item={this.state.selectItem}/>
+                            <QiniuPreview key={this.state.selectItem.key}  onSuccess = {this.reloadData} bucket={this.state.bucket}  domain={this.state.domain} item={this.state.selectItem}/>
                         </Affix>
-
-
 
 
                     </Col>
                 </Row>
-
             </div>
-
-
-
         </div>
     }
 });

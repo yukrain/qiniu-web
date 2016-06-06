@@ -8,10 +8,25 @@
 var express = require('express');
 var router = express.Router();
 var config = require('./../config');
+var request = require('request');
 
 var qiniu = require('./../controller/qiniu');
 var _qiniu = qiniu.qiniu;
 
+var client = new _qiniu.rs.Client();
+const QINIU_REDRESH_CODE = {
+    200: "成功加入队列",
+    400031: "存在无效的url",
+    400032: "存在无效的host",
+    400033: "预取url数达到限额",
+    400034: "刷新url数达到限额",
+    400036: "无效的请求id",
+    400037: "url已经被加入刷新队列",
+    500000: "七牛服务端内部错误",
+    500002: "服务端插入数据错误",
+    500005: "服务端查询数据错误",
+    500010: "服务端查询域名列表错误",
+}
 router.get('/', function(req, res) {
     res.render("index.html")
 });
@@ -53,5 +68,65 @@ router.get('/api/list',  function(req, res, next) {
 });
 
 
+//删除单个文件
+router.delete('/api/delete', function(req, res) {
+    var bucket =  req.body.bucket;
+    var key = req.body.key;
+
+    client.remove(bucket, key, function(err, ret) {
+        if (!err) {
+            // ok
+            res.send({ code: 100, ret: ret});
+        } else {
+            console.log(err);
+            res.send({ code: 403});
+            // http://developer.qiniu.com/docs/v6/api/reference/codes.html
+        }
+    });
+});
+
+//移动文件
+router.put('/api/move',  function(req, res) {
+    var bucket =  req.body.bucket;
+    var bucketDest = req.body.bucketDest;
+    var keyDest = req.body.keyDest;
+    var key = req.body.key;
+
+    client.move(bucket, key,bucketDest, keyDest, function(err, ret) {
+        if (!err) {
+            res.send({ code: 100, ret: ret});
+        } else {
+            res.send({ code: 403});
+            // http://developer.qiniu.com/docs/v6/api/reference/codes.html
+        }
+    });
+
+});
+
+//刷新缓存
+router.post('/api/refresh', function(req, res, next) {
+
+    var urls = req.body.urls;
+    request.post({
+        url: 'http://fusion.qiniuapi.com/refresh',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'QBox '+ qiniu.getAccessToken('/refresh')
+        },
+        json: {
+            urls: urls
+        }
+    }, function(err, response, body) {
+        if(err){
+            return next(err);
+        }
+        res.send({
+            code: body.code,
+            msg: QINIU_REDRESH_CODE[body.code]
+        });
+
+    });
+
+});
 
 module.exports = router;
