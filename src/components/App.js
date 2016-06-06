@@ -5,13 +5,14 @@ import moment from 'moment';
 import QiniuCard from './QiniuCard';
 import QiniuFolder from './QiniuFolder';
 import QiniuPreview from './QiniuPreview';
+import QiniuUploader from './QiniuUploader';
 
 
 let QiniuList = React.createClass({
 
     getInitialState() {
         return {
-            show: true,
+            show: false,
             bucket: 'dayu-static',
             date: moment().format('YYYY-MM-DD'),
             prefix: "",
@@ -48,6 +49,7 @@ let QiniuList = React.createClass({
             },
             success: (result) => {
                 this.setState({
+                    show: false,
                     ret: result.ret,
                     prefix: result.prefix,
                     domain: result.domain,
@@ -90,7 +92,6 @@ let QiniuList = React.createClass({
     },
 
     handleSelect(item){
-        console.log( item )
         this.setState({
             show: true,
             selectItem: item
@@ -151,10 +152,15 @@ let QiniuList = React.createClass({
                             </div>
                         </div>
                     </Col>
-                    <Col className="gutter-row" span={6}>
-                        <Affix offsetTop={20}>
-                           <QiniuPreview domain={this.state.domain} item={this.state.selectItem}/>
+                    <Col className="gutter-row" span={6} style={{paddingTop:30}}>
+                        <QiniuUploader bucket={this.state.bucket}  prefix={this.state.prefix}/>
+                        <Affix offsetTop={10}>
+                            <QiniuPreview key={this.state.selectItem.key}  domain={this.state.domain} item={this.state.selectItem}/>
                         </Affix>
+
+
+
+
                     </Col>
                 </Row>
 

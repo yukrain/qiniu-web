@@ -314,11 +314,11 @@ body{
 }
 
 
-.file-preview{
-    margin-top: 20px;
+.file-preview,.file-uploader{
     background: #fff;
     padding: 20px;
     border-radius: 4px;
+    margin-bottom: 10px;
 }
 .file-preview-content{
     margin: 0 0 20px 0;
@@ -332,7 +332,7 @@ body{
     font-size: 0;
 }
 .file-preview-content p{
-    margin-top: 30px;
+    margin-top: 10px;
     font-size: 12px;
 }
 .file-preview-content img{
@@ -340,7 +340,10 @@ body{
     margin: 0;
     padding: 0;
 }
-.file-preview-content .qiniu-card-preview-icon{
+.file-preview-content .file-preview-icon{
+    padding: 30px 0;
+}
+.file-preview-content .file-preview-icon .iconfont{
     font-size: 30px;
 }
 .file-preview-title{
@@ -370,4 +373,10 @@ body{
 .qiniu-card.disabled .qiniu-card-folder{
     color: #d3d3d3!important;
     pointer-events: none;
+}
+
+
+/*文件上传*/
+.file-uploader{
+
 }

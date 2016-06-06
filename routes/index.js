@@ -16,6 +16,14 @@ router.get('/', function(req, res) {
     res.render("index.html")
 });
 
+router.get('/api/token', function(req, res) {
+    var bucket =  req.query.bucket;
+    var key =  req.query.key;
+    res.send({
+        token : qiniu.uptoken(bucket, key)
+    })
+});
+
 
 router.get('/api/list',  function(req, res, next) {
     var bucket =  req.query.bucket;

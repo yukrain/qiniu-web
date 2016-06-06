@@ -4,6 +4,7 @@
 import { Button ,Tag} from 'antd';
 import moment from 'moment';
 import mixin from './mixin';
+import QueueAnim from 'rc-queue-anim'
 
 let QiniuList = React.createClass({
     mixins:[ mixin ],
@@ -53,46 +54,45 @@ let QiniuList = React.createClass({
                 default:
                     myclass = 'icon-fileo';
             }
-            return <div className="qiniu-card-preview-icon"> <i className={'iconfont ' + myclass + ' card-icon'}></i> <p> { this.props.item.key }</p></div>
+            return <div className="file-preview-icon"> <i className={'iconfont ' + myclass + ' card-icon'}></i> <p> { this.props.item.key }</p></div>
         }
     },
 
     render () {
         return  <div  className="file-preview" >
+                        {
+                            this.props.item.key ?
+                                (
+                                        <div >
+                                            <div className="file-preview-content">{this.getContentPreview( this.props.item.mimeType, this.props.item.key )}</div>
+                                            <div className="file-preview-info">
+                                                <div className="file-preview-title">
+                                                    {this.props.domain}{this.props.item.key}
+                                                </div>
+                                            <ul>
+                                                <li>类型 {this.props.item.mimeType}</li>
+                                                <li>哈希 {this.props.item.hash}  </li>
+                                                <li>大小 <span className="text-primary">{ this.filesize(this.props.item.fsize || 0)} </span> </li>
+                                                <li>修改时间  { moment(this.props.item.putTime/10000).format('YYYY-MM-DD Hh:mm:ss')} </li>
+                                            </ul>
+                                            </div>
+                                            <div  className="file-preview-buttons">
+                                                <Button type="dashed">删除</Button>
+                                                <Button type="default">刷新</Button>
+                                                <Button type="default">重命名</Button>
+                                                <Button type="primary">链接</Button>
+                                            </div>
+                                        </div>
 
-            {
-                this.props.item.key ?
-                    (  <div>
-                            <div className="file-preview-content">{this.getContentPreview( this.props.item.mimeType, this.props.item.key )}</div>
-                            <div className="file-preview-info">
-                                <div className="file-preview-title">
-                                    {this.props.domain}{this.props.item.key}
+                                ): (
+                                <div className="file-preview-content">
+                                    <p style={{marginTop: 30}}>
+                                        无预览
+                                    </p>
                                 </div>
-                            <ul>
-                                <li>类型 {this.props.item.mimeType}</li>
-                                <li>哈希 {this.props.item.hash}  </li>
-                                <li>大小 <span className="text-primary">{ this.filesize(this.props.item.fsize || 0)} </span> </li>
-                                <li>修改时间  { moment(this.props.item.putTime/10000).format('YYYY-MM-DD Hh:mm:ss')} </li>
-                            </ul>
-                            </div>
-                            <div  className="file-preview-buttons">
-                                <Button type="dashed">删除</Button>
-                                <Button type="default">刷新</Button>
-                                <Button type="default">重命名</Button>
-                                <Button type="primary">链接</Button>
-                            </div>
-                        </div>
-                    ): (
-                    <div className="file-preview-content">
-                        <p>
-                            请选择文件
-                        </p>
-                    </div>
-                )
-            }
-
-
-        </div>
+                            )
+                        }
+            </div>
     }
 });
 
