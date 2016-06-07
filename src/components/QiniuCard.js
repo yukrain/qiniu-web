@@ -1,7 +1,7 @@
 /**
  * Created by YUK on 16/6/3.
  */
-import { Card ,Icon } from 'antd';
+import { Card ,Badge, Icon } from 'antd';
 import moment from 'moment';
 import mixin from './mixin';
 moment.locale('zh-cn', {
@@ -41,32 +41,10 @@ let QiniuList = React.createClass({
 
     getContentPreview(type, key){
         if(type.indexOf('image')>-1){
-            return <img src={this.props.domain + this.props.item.key + '?imageMogr2/gravity/Center/thumbnail/!100x100r/crop/100x100/quality/100'} alt=""/>
+            return <img src={this.props.domain + this.props.item.key + '?imageMogr2/gravity/Center/thumbnail/!100x100r/crop/100x100/quality/100&_='+this.props.random} alt=""/>
         }else{
-            let myclass = '';
-            switch (type){
-                case 'application/pdf' :
-                    myclass = 'icon-filepdf';
-                    break;
-                case 'application/zip' :
-                    myclass = 'icon-filezip';
-                    break;
-                case 'text/javascript' :
-                    myclass = 'icon-filecodeo';
-                    break;
-                case 'text/css' :
-                    myclass = 'icon-filecodeo';
-                    break;
-                case 'text/plain' :
-                    myclass = 'icon-conowfile';
-                    break;
-                case 'application/vnd.android.package-archive' :
-                    myclass = 'icon-filezip';
-                    break;
-                default:
-                    myclass = 'icon-fileo';
-            }
-            return <div className="qiniu-card-preview-icon"> <i className={'iconfont ' + myclass + ' card-icon'}></i> <p> { this.props.item.key }</p></div>
+            let myclass = this.getFileIconClass(type)
+            return <div className="qiniu-card-preview-icon"> <i className={'iconfont ' + myclass + ' card-icon'}></i> <p> { this.getKeyFilename(this.props.item.key) }</p></div>
         }
     },
 
@@ -77,21 +55,21 @@ let QiniuList = React.createClass({
     },
     render () {
 
-
-        return <div className = { this.props.checked ? "qiniu-card checked": "qiniu-card"}>
-                <div className="qiniu-card-box">
+        return   <div className = { this.props.checked ? "qiniu-card checked": "qiniu-card"}>
+            <div className="qiniu-card-box">
                     <div className="qiniu-card-preview" onClick={this.handleClick}>
                         {this.getContentPreview( this.props.item.mimeType, this.props.item.key )}
-                    </div>
-                    <div className="qiniu-card-filesize">
-                        { this.filesize( this.props.item.fsize )}
                     </div>
                     <div className="qiniu-card-time">
                         { moment( this.props.item.putTime / 10000).fromNow()}
                     </div>
+                    <div className="qiniu-card-filesize">
+                        { this.filesize( this.props.item.fsize )}
+                    </div>
+
                 </div>
                 <div className="qiniu-card-hide">
-                    {this.props.item.key}
+                    { this.getKeyFilename( this.props.item.key) }
                 </div>
             </div>
     }

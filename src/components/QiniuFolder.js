@@ -1,7 +1,7 @@
 /**
  * Created by YUK on 16/6/3.
  */
-import { Card ,Icon } from 'antd';
+import { Card ,Badge, Icon } from 'antd';
 import moment from 'moment';
 
 let QiniuList = React.createClass({
@@ -19,6 +19,10 @@ let QiniuList = React.createClass({
 
     },
 
+    getKeyFolder : function(key){
+        return key.split('/').slice(-2)[0]
+    },
+
     handleClick(){
         if(this.props.onClick){
             this.props.onClick();
@@ -28,12 +32,13 @@ let QiniuList = React.createClass({
         var myclass =  this.props.disabled ? 'disabled': '';
         return <div className={'qiniu-card ' + myclass} onClick={this.handleClick}>
                 <div className="qiniu-card-box">
+
                     <div className="qiniu-card-folder">
                         {
-                            this.props.type == 'open'?  <i className='iconfont icon-folder-open card-icon'></i>:  <i className='iconfont icon-folder card-icon'></i>
+                            this.props.type == 'open'?      <i className='iconfont icon-folder-open card-icon'></i>:  <i className='iconfont icon-folder card-icon'></i>
                         }
                         <p>
-                            {this.props.folder}
+                            { this.getKeyFolder(this.props.folder)}
                         </p>
                     </div>
                 </div>

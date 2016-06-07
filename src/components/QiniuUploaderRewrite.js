@@ -9,12 +9,7 @@ const confirm = Modal.confirm;
 export default React.createClass({
     getInitialState() {
         return {
-            token:'',
-            key: '',
-            uploadUid: '',
-            keys:{
-
-            }
+            token:''
         };
     },
 
@@ -25,7 +20,8 @@ export default React.createClass({
                 url:'/api/token',
                 method: 'get',
                 data: {
-                    bucket: this.props.bucket
+                    bucket: this.props.bucket,
+                    key: this.props.item.key
                 },
                 crossOrigin: true,
                 type: 'json',
@@ -45,12 +41,6 @@ export default React.createClass({
 
     },
 
-    handleChangeKey(file, e){
-        this.setState({
-            uploadUid: file.uid,
-            key:  e.target.value
-        })
-    },
 
     handleChange(info){
         console.log(info);
@@ -72,31 +62,19 @@ export default React.createClass({
     render () {
         let props = {
             action: 'http://upload.qiniu.com/',
-            multiple: true,
+            multiple: false,
+            showUploadList: false,
             data:{
                 token: this.state.token,
-                key:  this.state.key,
+                key:   this.props.item.key,
             },
             beforeUpload: (file) => {
                 return new Promise( (resolve)=> {
-                    let new_key = this.props.prefix + file.name;  //设置默认的输入框内容
-
                     confirm({
-                        title: '设置 '+ file.name +' 文件路径',
-                        content: <div>  <Input defaultValue={new_key} onChange={this.handleChangeKey.bind(this, file)} />
-                        </div>,
+                        title: '覆盖上传',
+                        content: <p>用 <span className="text-danger">{file.name} </span> 覆盖文件吗?</p> ,
                         onOk:() => {
-                            if( this.state.uploadUid !== file.uid ){    //设置默认的文件key
-                                this.setState({
-                                    key: new_key
-                                });
-                            }
                             resolve(file);
-                        },
-                        onCancel:()=>{
-                            this.setState({
-                                key: ''
-                            });
                         }
                     });
 
@@ -104,15 +82,15 @@ export default React.createClass({
             },
             onChange: this.handleChange
         };
-        return  <div  className="file-uploader" >
-
+        return  <div  className="file-uploader file-uploader-rewrite" >
                 <Dragger {...props} >
-                    <div style={{ marginTop: 16, height: 100 }}>
+                    <div style={{ marginTop: 16, height: 95 }}>
                         <p className="ant-upload-drag-icon">
-                            <Icon type="inbox" />
+                            <span  className="text-danger"> <Icon type="cloud-upload-o"/></span>
+
                         </p>
-                        <p className="ant-upload-text">上传文件到此目录</p>
-                        <p className="ant-upload-hint">支持单个或批量拖拽上传</p>
+                        <p className="ant-upload-text"><span >覆盖上传</span> </p>
+                        <p className="ant-upload-hint "> <span className="text-danger">{this.props.item.key}</span> </p>
                     </div>
                 </Dragger>
             </div>

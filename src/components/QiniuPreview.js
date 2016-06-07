@@ -4,6 +4,7 @@
 import { Button ,Tag, message, Modal, Icon, Input} from 'antd';
 const confirm = Modal.confirm;
 
+import QiniuUploaderRewrite from './QiniuUploaderRewrite';
 import moment from 'moment';
 import reqwest from 'reqwest';
 import mixin from './mixin';
@@ -15,15 +16,9 @@ let QiniuList = React.createClass({
     mixins:[ mixin ],
     getInitialState() {
         return {
+            showUploader: false,
             keyDest: null
         };
-    },
-
-    componentWillMount () {
-    },
-
-    componentDidMount() {
-
     },
 
     handleClick(){
@@ -36,6 +31,27 @@ let QiniuList = React.createClass({
         this.setState({
             keyDest:  e.target.value
         })
+    },
+
+
+    copyToClipboard (text){
+        if(window.clipboardData){
+            window.clipboardData.setData('copy-node', text);
+            return;
+        }else{
+            var copyNode = document.getElementById('copy-node');
+            copyNode.value = text;
+            copyNode.focus();
+            document.execCommand('selectall');
+            var result = document.execCommand('copy', false, null);
+            if(result){
+                message.info('已复制到剪贴板:'+ text);
+                return;
+            }else{
+                alert('不支持自动复制图片地址喔 换chrome试一下~(可以手动复制图片地址)')
+                return;
+            }
+        }
     },
 
     move(){
@@ -102,6 +118,7 @@ let QiniuList = React.createClass({
     },
 
     refresh(){
+        let hide = message.loading('正在加入刷新队列...', 0);
         var url = this.props.domain + this.props.item.key;
         reqwest({
             url:'/api/refresh',
@@ -112,9 +129,11 @@ let QiniuList = React.createClass({
             crossOrigin: true,
             type: 'json',
             error: (err) => {
+                hide();
                 message.error('已存在队列');
             },
             success: (result) => {
+                hide();
                 if( result.code == 200){
                     message.success(result.msg);
                 }else{
@@ -131,74 +150,78 @@ let QiniuList = React.createClass({
 
     getContentPreview(type, key){
         if(type.indexOf('image')>-1){
-            return <img src={this.props.domain + this.props.item.key } alt=""/>
+            return <img src={this.props.domain + this.props.item.key+'?imageMogr2/thumbnail/!300x300r/quality/100&_='+this.props.random } alt=""/>
         }else{
-            let myclass = '';
-            switch (type){
-                case 'application/pdf' :
-                    myclass = 'icon-filepdf';
-                    break;
-                case 'application/zip' :
-                    myclass = 'icon-filezip';
-                    break;
-                case 'text/javascript' :
-                    myclass = 'icon-filecodeo';
-                    break;
-                case 'text/css' :
-                    myclass = 'icon-filecodeo';
-                    break;
-                case 'text/plain' :
-                    myclass = 'icon-conowfile';
-                    break;
-                case 'application/vnd.android.package-archive' :
-                    myclass = 'icon-filezip';
-                    break;
-                default:
-                    myclass = 'icon-fileo';
-            }
-            return <div className="file-preview-icon"> <i className={'iconfont ' + myclass + ' card-icon'}></i> <p> { this.props.item.key }</p></div>
+            let myclass = this.getFileIconClass(type)
+            return <div className="file-preview-icon"> <i className={'iconfont ' + myclass + ' card-icon'}></i> <p> 该文件无法预览</p></div>
         }
     },
 
     render () {
         return  this.props.item.key ?
-            (  <QueueAnim className="demo-content"
-                          key="demo"
+            (  <QueueAnim  key="demo"
                           type={['right', 'left']}
                           ease={['easeOutQuart', 'easeInOutQuart']}>
                     <div  className="file-preview" key="1">
-                        <div >
-                            <div className="file-preview-title">
-                                {this.props.item.key}
+                        <div>
+                            <div className="copy-node">
+                                <Input  id="copy-node" value=''/>
                             </div>
+                            <QueueAnim className="demo-content"
+                                       key="demo" delay={50}
+                                       type={['right', 'bottom']}>
 
-                            <div  className="file-preview-buttons" >
-                                <ButtonGroup >
-                                    <Button type="default" icon="delete"  onClick={this.remove}></Button>
-                                    <Button type="default" icon="reload"  onClick={this.refresh}></Button>
-                                    <Button type="default" icon="download" onClick={this.download}></Button>
-                                    <Button type="default" icon="edit"  onClick={this.move}></Button>
-                                    <Button type="default"  icon="upload" ></Button>
-                                </ButtonGroup>
+                                <div className="file-preview-title" key="2">
+                                    { this.getKeyFilename(this.props.item.key)}
+                                </div>
 
 
-                            </div>
+                                <div className="file-preview-info" key="4">
 
-                            <div className="file-preview-info">
+                                    <p>
+                                        {this.props.domain + this.props.item.key}
+                                    </p>
+                                    <ul>
+                                        <li><Icon type="book" /> 类型 {this.props.item.mimeType}</li>
+                                        <li><Icon type="book" /> 哈希 {this.props.item.hash}  </li>
+                                        <li><Icon type="book" /> 文件大小 <span className="text-primary">{ this.filesize(this.props.item.fsize || 0)} </span> </li>
+                                        <li><Icon type="clock-circle-o" /> 修改时间  { moment(this.props.item.putTime/10000).format('YYYY-MM-DD HH:mm:ss')} </li>
+                                    </ul>
+                                </div>
 
-                                <p>
-                                    {this.props.domain + this.props.item.key}
-                                </p>
-                                <ul>
-                                    <li><Icon type="book" /> 类型 {this.props.item.mimeType}</li>
-                                    <li><Icon type="book" /> 哈希 {this.props.item.hash}  </li>
-                                    <li><Icon type="book" /> <span className="text-primary">{ this.filesize(this.props.item.fsize || 0)} </span> </li>
-                                    <li><Icon type="clock-circle-o" /> 修改时间  { moment(this.props.item.putTime/10000).format('YYYY-MM-DD HH:mm:ss')} </li>
-                                </ul>
-                            </div>
+                                <div  className="file-preview-buttons"  key="3"  style={{textAlign:'center'}}>
+                                    <ButtonGroup >
+                                        <Button type="default" icon="delete"  onClick={this.remove}>删除</Button>
+                                        <Button type="default" icon="reload"  onClick={this.refresh}>刷新</Button>
+                                        <Button type="default" icon="edit"  onClick={this.move}>移动</Button>
+                                        {
+                                            this.state.showUploader ? (
+                                                <Button type="default" icon="eye" onClick={()=>{ this.setState({showUploader: false}) }}>预览</Button>
+                                            ):(
+                                                <Button type="default" icon="upload" onClick={()=>{ this.setState({showUploader: true}) }}>替换</Button>
+                                            )
+                                        }
 
-                            <div className="file-preview-content">{this.getContentPreview( this.props.item.mimeType, this.props.item.key )}</div>
+                                    </ButtonGroup>
+                                </div>
 
+                                    {
+                                        this.state.showUploader ? (
+                                            <div key="5">
+                                                <QiniuUploaderRewrite  {...this.props}/>
+                                            </div>
+                                        ):(
+                                            <div key="5" className="file-preview-content">{this.getContentPreview( this.props.item.mimeType, this.props.item.key )}</div>
+                                        )
+                                    }
+
+
+                                <div key="6" style={{textAlign:'center'}}>
+                                    <Button type="default"  icon="download" onClick={this.download}>下载文件</Button>
+                                    <Button type="primary" style={{marginLeft:8}} icon="copy"  onClick={this.copyToClipboard.bind(this, this.props.domain + this.props.item.key)}>复制链接</Button>
+                                </div>
+
+                            </QueueAnim>
                         </div>
                     </div>
                 </QueueAnim>

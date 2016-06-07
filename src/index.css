@@ -83,8 +83,17 @@ body{
     height: 40px;
     line-height: 40px;
     border-bottom: 1px solid #e9e9e9;
-    padding: 2px 16px;
+    padding: 0px 16px;
+    transition: background .1s,top .1s;
 }
+
+.ant-layout-aside .ant-layout-header.edit{
+    border-bottom: 1px solid #b23c22;
+    background: #fb5734;
+    color: #fff;
+}
+
+
 .ant-layout-aside .ant-layout-header a{
     height: 16px;
     line-height: 16px;
@@ -262,10 +271,10 @@ body{
     vertical-align: middle;
 }
 .qiniu-card-filesize{
-    margin: 3px 0;
     color: #999;
 }
 .qiniu-card-time{
+    margin: 3px 0;
     color: #717171;
 }
 .qiniu-card-hide{
@@ -338,6 +347,10 @@ body{
     padding: 20px;
     border-radius: 4px;
     margin-bottom: 10px;
+
+}
+.file-preview{
+    min-height: 395px;
 }
 .file-preview-info p{
     margin: 10px 0;
@@ -349,7 +362,7 @@ body{
     min-height: 100px;
     white-space: nowrap;
     text-align: center;
-    background: #e5e5e5;
+
     color: #929292;
     word-wrap: break-word;
     overflow: hidden;
@@ -403,8 +416,20 @@ body{
     pointer-events: none;
 }
 
+.copy-node{
+    height: 1px;
+    opacity: 0;
+}
+.ant-upload.ant-upload-drag p.ant-upload-drag-icon{
+    height: 20px;
+    margin-bottom: 24px;
+}
+.ant-upload.ant-upload-drag p.ant-upload-drag-icon .anticon{
+    font-size: 40px;
+}
 
 /*文件上传*/
-.file-uploader{
+.file-uploader.file-uploader-rewrite{
+    padding: 20px 0;
 
 }

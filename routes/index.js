@@ -85,6 +85,35 @@ router.delete('/api/delete', function(req, res) {
     });
 });
 
+//批量删除
+router.delete('/api/batchdelete',   function(req, res) {
+    var bucket =  req.body.bucket;
+    var deleteKeys = req.body.keys;
+    var deleteKeysPath = [];
+    if(deleteKeys.length == 0){
+        return  res.send({ code: 201 });
+    }
+    for(var i=0; i < deleteKeys.length; i++){
+        deleteKeysPath.push(new _qiniu.rs.EntryPath(bucket, deleteKeys[i]));
+    }
+    client.batchDelete(deleteKeysPath, function(err, ret) {
+        if (!err) {
+            for (i in ret) {
+                if (ret[i].code !== 200) {
+                    // parse error code
+                    return res.send({ code: 200, ret: ret});
+                    // http://developer.qiniu.com/docs/v6/api/reference/codes.html
+                }
+                return res.send({ code: 100, ret: ret});
+            }
+        } else {
+            return res.send({ code: 403});
+            // http://developer.qiniu.com/docs/v6/api/reference/codes.html
+        }
+    });
+
+});
+
 //移动文件
 router.put('/api/move',  function(req, res) {
     var bucket =  req.body.bucket;
@@ -100,6 +129,40 @@ router.put('/api/move',  function(req, res) {
             // http://developer.qiniu.com/docs/v6/api/reference/codes.html
         }
     });
+
+});
+
+router.put('/api/batchmove/',function(req, res) {
+    var bucket =  req.body.bucket;
+    var bucketDest = req.body.bucketDest;
+    var keys = req.body.keys;
+
+    var keysPathPair = [];
+    if(keys.length == 0){
+        return  res.send({ code: 201 });
+    }
+    for(var i=0; i < keys.length; i++){
+        keysPathPair.push(new _qiniu.rs.EntryPathPair( new _qiniu.rs.EntryPath(bucket, keys[i][0]), new _qiniu.rs.EntryPath(bucket, keys[i][1]) ));
+    }
+
+    client.batchMove(keysPathPair, function(err, ret) {
+        if (!err) {
+            for (i in ret) {
+                if (ret[i].code !== 200) {
+                    // parse error code
+                    return res.send({ code: 200, ret: ret});
+                    // http://developer.qiniu.com/docs/v6/api/reference/codes.html
+                }
+            }
+
+
+            return res.send({ code: 100, ret: ret});
+        } else {
+            return res.send({ code: 403});
+            // http://developer.qiniu.com/docs/v6/api/reference/codes.html
+        }
+    });
+
 
 });
 

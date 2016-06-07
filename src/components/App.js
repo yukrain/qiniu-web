@@ -1,27 +1,50 @@
-import { Alert, Badge,Breadcrumb,  Radio, Table, Icon, Form,Affix, Modal, InputNumber, DatePicker, Spin, Row, Col, Select, Input, Button, message} from 'antd';
+import { Alert, Badge,Breadcrumb, Checkbox, Radio, Table, Icon, Form, Switch, Affix, Modal, InputNumber, DatePicker, Spin, Row, Col, Select, Input, Button, message} from 'antd';
 import QueueAnim from 'rc-queue-anim'
 import reqwest from 'reqwest';
 import moment from 'moment';
+import classname from 'classname';
 import QiniuCard from './QiniuCard';
 import QiniuFolder from './QiniuFolder';
 import QiniuPreview from './QiniuPreview';
 import QiniuUploader from './QiniuUploader';
+import QiniuBatch from './QiniuBatch';
 
-
+const ButtonGroup = Button.Group;
 let QiniuList = React.createClass({
 
     getInitialState() {
         return {
             loading: true,
-            bucket: 'dayu-static',
+            edit: false,
+            bucket: 'yuk-wordpress',
             date: moment().format('YYYY-MM-DD'),
             prefix: "",
             ret: {
                 items: [],
                 commonPrefixes: []
             },
-            selectItem : {}
+            selectItem : {}   ,
+            selectKeys:[], //多选模式 key数组
+            random: new Date().getTime()
         };
+    },
+
+    changeCheckAll(e){
+        var selectKeys = this.state.selectKeys;
+        if(e.target.checked){
+            this.state.ret.items.map(item=>{
+                let index = selectKeys.indexOf(item.key);
+                if( index == -1){
+                    selectKeys.push(item.key);
+                }
+            });
+        }else{
+            selectKeys = [];
+        }
+
+        this.setState({
+            selectKeys
+        });
     },
 
     componentWillMount () {
@@ -30,6 +53,15 @@ let QiniuList = React.createClass({
 
     componentDidMount() {
 
+    },
+
+
+    toggleEdit(checked){
+        this.setState({
+            edit: checked,
+            selectItem : {}   ,
+            selectKeys:[]
+        });
     },
 
     fetchFather(){
@@ -41,15 +73,18 @@ let QiniuList = React.createClass({
     },
 
     reloadData(){
+
         this.fetchData(this.state.prefix);
     },
+
     fetchData(prefix = ''){
-        this.setState({loading: true});
+        this.setState({loading: true  });
+        console.log( new Date().getTime())
         reqwest({
             url:'/api/list',
             method: 'get',
             data: {
-                bucket: 'dayu-static',
+                bucket: this.state.bucket,
                 prefix:  prefix
             },
             crossOrigin: true,
@@ -67,7 +102,9 @@ let QiniuList = React.createClass({
                     ret: result.ret,
                     prefix: result.prefix,
                     domain: result.domain,
-                    selectItem:{}
+                    selectItem:{},  //单选模式
+                    random: new Date().getTime()
+
                 })
 
             }
@@ -96,10 +133,36 @@ let QiniuList = React.createClass({
     },
 
     handleSelect(item){
-        this.setState({
-            selectItem: item
-        })
+        if(this.state.edit){
+            //编辑模式
+            var selectKeys = this.state.selectKeys;
+            let index = selectKeys.indexOf(item.key);
+            if( index == -1){
+                selectKeys.push(item.key);
+            }else{
+                selectKeys.splice(index, 1)
+            }
+            console.log(selectKeys)
+            this.setState({
+                selectKeys: selectKeys
+            })
+        }else{
+            //单选模式
+            if(this.state.selectItem.key == item.key){
+                this.setState({
+                    selectItem: {}
+                })
+            }else{
+                this.setState({
+                    selectItem: item
+                });
+            }
+        }
+
+
+
     },
+
     render () {
         const breadcrumbArray =   this.getAllParentsPrefixArray(this.state.prefix);
 
@@ -107,36 +170,40 @@ let QiniuList = React.createClass({
             return  <Breadcrumb.Item href="javascript:void(0)" key={item[0]} onClick={this.fetchData.bind(this, item[1])}>{item[0]}</Breadcrumb.Item>
         });
 
+        const headerClass = classname({
+            'ant-layout-header': true,
+            'edit': this.state.edit
+        });
+
         return <div className="ant-layout-aside">
-            <div className="ant-layout-header">
+            <div className={headerClass}>
                 <span>七牛文件管理工具</span>
 
                 <ul className="right">
                     <li>{this.state.date}</li>
                     <li>|</li>
                     <li>
-                        <Badge dot>
-                            <Icon type="mail" />
-                        </Badge>
+                        已登录
                     </li>
                 </ul>
             </div>
 
             <div  className="ant-layout-main">
-                <Row gutter={16}>
-                    <Col className="gutter-row" span={1}>
-
-                    </Col>
-                    <Col className="gutter-row" span={16}>
+                <Row >
+                    <Col className="gutter-row" offset={1} span={16}>
 
                         <Row>
-                            <Col span={20} style={{paddingLeft:10}}>
-                                <Breadcrumb separator=">" >
+                            <Col span={14} style={{paddingLeft:10}}>
+                                <Breadcrumb >
                                     {breadcrumb}
                                 </Breadcrumb>
                             </Col>
-                            <Col span={4} style={{textAlign: "center"}}>
-                                <Button  type="primary" icon="reload" onClick={this.handleClickReload} loading={this.state.loading}  >刷新</Button>
+                        </Row>
+
+
+                        <Row  style={{marginTop:10}}>
+                            <Col span={12}  style={{paddingLeft:10}}>
+                                <a  onClick={this.handleClickReload} href="javascript:void(0)"><Icon type="reload" /> 刷新</a> | 批处理 <Switch size="small" defaultChecked={false} onChange={this.toggleEdit} />  {this.state.edit ?<Checkbox defaultChecked={false} onChange={this.changeCheckAll} >全选</Checkbox>: null}
                             </Col>
                         </Row>
 
@@ -145,34 +212,44 @@ let QiniuList = React.createClass({
                             <div key="1">
                                 {
                                     this.state.prefix == '' ?  <QiniuFolder key="1" disabled folder={this.state.bucket} type="open"/>:
-                                        <QiniuFolder key="1" folder={'返回上级'} onClick={this.fetchFather} type="open"/>
+                                        <QiniuFolder disabled={this.state.edit} key="1" folder={'返回上级'} onClick={this.fetchFather} type="open"/>
                                 }
 
                                 {
                                     this.state.ret.commonPrefixes? this.state.ret.commonPrefixes.map( folder =>{
-                                        return <QiniuFolder key={folder}  onClick={this.fetchData.bind(this, folder)} folder={folder} />
+                                        return <QiniuFolder disabled={this.state.edit}  key={folder}  onClick={this.fetchData.bind(this, folder)} folder={folder} />
 
                                     }): null
 
                                 }
                                 {
                                     this.state.ret.items.map( item =>{
-                                        return <QiniuCard checked={item.key == this.state.selectItem.key} onClick={this.handleSelect} domain={this.state.domain} key={item.key} item={item}/>
-
+                                        return <QiniuCard checked={
+                                        this.state.edit ?(
+                                            this.state.selectKeys.indexOf(item.key)>=0
+                                        ):  item.key == this.state.selectItem.key
+                                        } onClick={this.handleSelect} domain={this.state.domain} key={item.key} item={item} random={this.state.random}/>
                                     })
 
                                 }
                             </div>
                         </div>
                     </Col>
-                    <Col className="gutter-row" span={6} style={{paddingTop:32}}>
+                    <Col className="gutter-row" span={6} style={{paddingTop:10}}>
 
                         <QiniuUploader bucket={this.state.bucket}
                                        prefix={this.state.prefix}
                                        onSuccess = {this.reloadData}
                         />
+
                         <Affix offsetTop={10}>
-                            <QiniuPreview key={this.state.selectItem.key}  onSuccess = {this.reloadData} bucket={this.state.bucket}  domain={this.state.domain} item={this.state.selectItem}/>
+                            {
+                                this.state.edit?
+                                <QiniuBatch key={this.state.selectItem.key}  onSuccess = {this.reloadData} bucket={this.state.bucket} prefix={this.state.prefix}  domain={this.state.domain} keys={this.state.selectKeys}/>
+                                :
+                                <QiniuPreview key={this.state.selectItem.key} random={this.state.random}  onSuccess = {this.reloadData} bucket={this.state.bucket}  prefix={this.state.prefix}   domain={this.state.domain} item={this.state.selectItem}/>
+                            }
+
                         </Affix>
 
 
