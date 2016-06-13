@@ -48,7 +48,7 @@ http://localhost:3000/
 
 #### 预览
 ##### 界面
-![pic1](https://github.com/yukrain/qiniu-web/preview/p1.jpg)
+![pic1](https://raw.githubusercontent.com/yukrain/qiniu-web/master/preview/p1.jpg)
 
 ##### 多选编辑
-![pic2](https://github.com/yukrain/qiniu-web/preview/p2.jp)
+![pic2](https://raw.githubusercontent.com/yukrain/qiniu-web/master/preview/p2.jpg)
