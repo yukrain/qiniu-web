@@ -8,15 +8,23 @@ import QiniuFolder from './QiniuFolder';
 import QiniuPreview from './QiniuPreview';
 import QiniuUploader from './QiniuUploader';
 import QiniuBatch from './QiniuBatch';
-
+const Option = Select.Option;
 const ButtonGroup = Button.Group;
 let QiniuList = React.createClass({
 
     getInitialState() {
+        let buckets = window.INIT_DATA.buckets;
+        let initBucket = '';
+        for(let item in buckets){
+            if(initBucket == ''){
+                initBucket = item;
+            }
+        }
         return {
             loading: true,
             edit: false,
-            bucket: 'yuk-wordpress',
+            buckets: buckets || {},
+            bucket: initBucket,
             date: moment().format('YYYY-MM-DD'),
             prefix: "",
             ret: {
@@ -73,13 +81,11 @@ let QiniuList = React.createClass({
     },
 
     reloadData(){
-
         this.fetchData(this.state.prefix);
     },
 
     fetchData(prefix = ''){
         this.setState({loading: true  });
-        console.log( new Date().getTime())
         reqwest({
             url:'/api/list',
             method: 'get',
@@ -92,24 +98,41 @@ let QiniuList = React.createClass({
             error: (err) => {
                 message.error('加载失败');
                 this.setState({
-                    loading: false
+                    loading: false,
+                    ret: {
+                        items: [],
+                        commonPrefixes: []
+                    },
                 })
             },
             success: (result) => {
-                message.success('刷新成功');
-                this.setState({
-                    loading: false,
-                    ret: result.ret,
-                    prefix: result.prefix,
-                    domain: result.domain,
-                    selectItem:{},  //单选模式
-                    random: new Date().getTime()
+                if(result.success){
+                    message.success('刷新成功');
+                    this.setState({
+                        loading: false,
+                        ret: result.ret,
+                        prefix: result.prefix,
+                        domain: result.domain,
+                        selectItem:{},  //单选模式
+                        random: new Date().getTime()
 
-                })
+                    })
+                }else{
+                    message.error('加载失败',2);
+                    this.setState({
+                        loading: false,
+                        ret: {
+                            items: [],
+                            commonPrefixes: []
+                        },
+                    })
+                }
+
 
             }
         });
     },
+
 
     getParentsPrefix(str){
         var str2 =  str.replace(/(.*)(\/.+)/g, "$1");
@@ -132,6 +155,16 @@ let QiniuList = React.createClass({
         return result;
     },
 
+    handleChangeBucket(value){
+        this.setState({
+            bucket: value
+        },()=>{
+            this.fetchData('');
+        });
+
+
+    },
+
     handleSelect(item){
         if(this.state.edit){
             //编辑模式
@@ -142,7 +175,6 @@ let QiniuList = React.createClass({
             }else{
                 selectKeys.splice(index, 1)
             }
-            console.log(selectKeys)
             this.setState({
                 selectKeys: selectKeys
             })
@@ -169,6 +201,23 @@ let QiniuList = React.createClass({
         const breadcrumb = breadcrumbArray.map(item=>{
             return  <Breadcrumb.Item href="javascript:void(0)" key={item[0]} onClick={this.fetchData.bind(this, item[1])}>{item[0]}</Breadcrumb.Item>
         });
+
+        let buckets = [];
+        for(let item in this.state.buckets){
+            buckets.push( {bucket: item, domain: this.state.buckets[item] })
+        }
+
+        breadcrumb.unshift(
+            <Breadcrumb.Item href="javascript:void(0)" key="buckets">
+                <Select value={this.state.bucket} style={{ minWidth: 120 }} size="small" onChange={this.handleChangeBucket}>
+                    {   buckets.map(item=>{
+                        return <Option key={item.bucket}>{item.bucket}</Option>
+                        })
+                    }
+                </Select>
+            </Breadcrumb.Item>
+        );
+
 
         const headerClass = classname({
             'ant-layout-header': true,
@@ -197,14 +246,16 @@ let QiniuList = React.createClass({
                                 <Breadcrumb >
                                     {breadcrumb}
                                 </Breadcrumb>
+
+                            </Col>
+                            <Col span={9}  style={{paddingLeft:10,textAlign:'right'}}>
+                                {this.state.edit ?<Checkbox defaultChecked={false} onChange={this.changeCheckAll} >全选</Checkbox>: null} <Switch size="small" defaultChecked={false} onChange={this.toggleEdit} /> 批处理 | <a  onClick={this.handleClickReload} href="javascript:void(0)"><Icon type="reload" /> 刷新</a>
                             </Col>
                         </Row>
 
 
                         <Row  style={{marginTop:10}}>
-                            <Col span={12}  style={{paddingLeft:10}}>
-                                <a  onClick={this.handleClickReload} href="javascript:void(0)"><Icon type="reload" /> 刷新</a> | 批处理 <Switch size="small" defaultChecked={false} onChange={this.toggleEdit} />  {this.state.edit ?<Checkbox defaultChecked={false} onChange={this.changeCheckAll} >全选</Checkbox>: null}
-                            </Col>
+
                         </Row>
 
 

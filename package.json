@@ -11,12 +11,7 @@
     "start": "NODE_ENV=development node-dev --harmony app.js",
     "start-production": "NODE_ENV=production  node --harmony app.js",
     "webpack-dev": "node webpack.server.js",
-    "webpack-pro": "webpack --config webpack.production.js --progress --colors --display-modules --profile",
-    "pm2-start": "pm2 start pm2.json",
-    "sync-yuk": "sh ./sync-yuk.sh",
-    "sync-download": "sh ./sync-download.sh",
-    "request": "~2.40.0",
-    "sync-backup": "sh ./sync-backup.sh"
+    "webpack-pro": "webpack --config webpack.production.js --progress --colors --display-modules --profile"
   },
   "dependencies": {
     "art-template": "~3.0.3",

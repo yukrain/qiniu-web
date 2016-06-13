@@ -26,9 +26,13 @@ const QINIU_REDRESH_CODE = {
     500002: "服务端插入数据错误",
     500005: "服务端查询数据错误",
     500010: "服务端查询域名列表错误",
-}
+};
+
 router.get('/', function(req, res) {
-    res.render("index.html")
+
+    res.render("index.html", { INIT_DATA: {
+        buckets: config.qiniu.domain
+    }})
 });
 
 router.get('/api/token', function(req, res) {

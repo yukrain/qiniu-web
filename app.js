@@ -12,6 +12,10 @@ template.config('base', '');
 template.config('extname', '.html');
 template.config('cache', false);
 
+template.helper('json2str', function (json, format) {
+    return  JSON.stringify(json);
+});
+
 var routes = require('./routes/index');
 
 var config = require('./config');
@@ -89,7 +93,7 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.listen(3002,function(){
-    console.log(' Listening On Port',3002);
+app.listen(config.port,function(){
+    console.log(' Listening On Port',config.port);
 });
 module.exports = app;

@@ -3,11 +3,13 @@
 
 var config = {
     "env":"production",
+    port: 3000,
     qiniu: {
         ACCESS_KEY: "",
         SECRET_KEY: "",
         domain:{
-            //   'bucketName': "domain",
+            'bucketName1': "http://domain.com", //文件访问域名
+            'bucketName2': "http://domain2.com",
         }
     }
 };

@@ -45,7 +45,7 @@ let QiniuList = React.createClass({
             document.execCommand('selectall');
             var result = document.execCommand('copy', false, null);
             if(result){
-                message.info('已复制到剪贴板:'+ text);
+                message.success('已复制到剪贴板:'+ text);
                 return;
             }else{
                 alert('不支持自动复制图片地址喔 换chrome试一下~(可以手动复制图片地址)')
@@ -53,6 +53,7 @@ let QiniuList = React.createClass({
             }
         }
     },
+
 
     move(){
         confirm({
@@ -148,9 +149,15 @@ let QiniuList = React.createClass({
         window.open(this.props.domain + this.props.item.key + '?attname=')
     },
 
+    preview(e, e2,src){
+        window.open(this.props.domain + this.props.item.key )
+    },
+
     getContentPreview(type, key){
         if(type.indexOf('image')>-1){
-            return <img src={this.props.domain + this.props.item.key+'?imageMogr2/thumbnail/!300x300r/quality/100&_='+this.props.random } alt=""/>
+            return <div>
+                <img src={ this.props.domain + this.props.item.key+'?imageMogr2/thumbnail/!300x300r/quality/100&_='+this.props.random } alt=""/>
+                </div>
         }else{
             let myclass = this.getFileIconClass(type)
             return <div className="file-preview-icon"> <i className={'iconfont ' + myclass + ' card-icon'}></i> <p> 该文件无法预览</p></div>
@@ -217,7 +224,9 @@ let QiniuList = React.createClass({
 
 
                                 <div key="6" style={{textAlign:'center'}}>
-                                    <Button type="default"  icon="download" onClick={this.download}>下载文件</Button>
+
+                                    <Button type="default" style={{marginLeft:8}}  icon="download" onClick={this.download}></Button>
+                                    <Button type="default" style={{marginLeft:8}}  icon="eye" onClick={this.preview}>打开</Button>
                                     <Button type="primary" style={{marginLeft:8}} icon="copy"  onClick={this.copyToClipboard.bind(this, this.props.domain + this.props.item.key)}>复制链接</Button>
                                 </div>
 
