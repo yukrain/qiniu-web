@@ -2,7 +2,7 @@
 //配置七牛 拷贝此文件 配置 并命名为 index.js
 
 var config = {
-    "env":"production",
+    debug: true,
     port: 3000,
     qiniu: {
         ACCESS_KEY: "",

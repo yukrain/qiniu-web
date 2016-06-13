@@ -13,7 +13,11 @@
 <script>
     window.INIT_DATA = JSON.parse(document.getElementById('init_data').value);
 </script>
+{{if debug}}
 <script src="http://localhost:8082/webpack-dev-server.js"></script>
 <script src="http://localhost:8082/assets/index.js"></script>
+{{else}}
+<script src="/assets/index.js"></script>
+{{/if}}
 </body>
 </html>
