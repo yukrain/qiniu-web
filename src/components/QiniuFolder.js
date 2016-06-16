@@ -27,7 +27,7 @@ let QiniuList = React.createClass({
 
                     <div className="qiniu-card-folder">
                         {
-                            this.props.type == 'open'?      <i className='iconfont icon-folder-open card-icon'></i>:  <i className='iconfont icon-folder card-icon'></i>
+                            this.props.type == 'open'?   <i className='iconfont icon-folder-open card-icon'></i>:  <i className='iconfont icon-folder card-icon'></i>
                         }
                         <p>
                             { this.getKeyFolder(this.props.folder)}

@@ -150,7 +150,7 @@ let QiniuList = React.createClass({
             str = parent[1];
         }
 
-        result.unshift(['根目录','']);
+        result.unshift([<Icon type="home" />,'']);
         return result;
     },
 
@@ -210,7 +210,7 @@ let QiniuList = React.createClass({
             <Breadcrumb.Item href="javascript:void(0)" key="buckets">
                 <Select value={this.state.bucket} style={{ minWidth: 120 }} size="small" onChange={this.handleChangeBucket}>
                     {   buckets.map(item=>{
-                        return <Option key={item.bucket}>{item.bucket}</Option>
+                        return <Option key={item.bucket}><Icon type="hdd" /> {item.bucket}</Option>
                         })
                     }
                 </Select>
@@ -253,13 +253,8 @@ let QiniuList = React.createClass({
                         </Row>
 
 
-                        <Row  style={{marginTop:10}}>
-
-                        </Row>
-
 
                         <div>
-                            <div key="1">
                                 {
                                     this.state.prefix == '' ?  <QiniuFolder key="1" disabled folder={this.state.bucket} type="open"/>:
                                         <QiniuFolder disabled={this.state.edit} key="1" folder={'返回上级'} onClick={this.fetchFather} type="open"/>
@@ -282,7 +277,6 @@ let QiniuList = React.createClass({
                                     })
 
                                 }
-                            </div>
                         </div>
                     </Col>
                     <Col className="gutter-row" span={6} style={{paddingTop:10}}>
