@@ -44,30 +44,56 @@ router.get('/api/token', function(req, res) {
 });
 
 
+function getAllPrefix(bucket, prefix , marker, maxTimes, times, data, callback){
+    if(!times){
+        times = 1;
+    }
+
+    if(!data){
+        data = {
+            "marker": null,
+            "items": [ ],
+            "commonPrefixes": []
+        };
+    }
+
+    _qiniu.rsf.listPrefix(bucket, prefix , marker, null/*limit*/, '/', function(err, ret) {
+        if (!err) {
+
+            if(ret.commonPrefixes){
+                data.commonPrefixes =  data.commonPrefixes.concat(ret.commonPrefixes);
+            }
+
+            if(ret.items ){
+                data.items = data.items.concat(ret.items);
+            }
+            data.marker = ret.marker;
+            if(ret.marker && times < maxTimes){   //如果可以继续递归查询 再查
+                times ++ ;
+                getAllPrefix(bucket, prefix ,ret.marker, maxTimes, times, data, callback)
+            }else{
+                callback(null, data);
+
+            }
+        } else {
+           callback(err);
+        }
+    });
+}
+
+
 router.get('/api/list',  function(req, res, next) {
     var bucket =  req.query.bucket;
     var prefix =  req.query.prefix;
     var marker =  req.query.marker || '';
 
-    _qiniu.rsf.listPrefix(bucket, prefix , marker, null/*limit*/, '/', function(err, ret) {
-        if (!err) {
-            // process ret.marker & ret.items           delimiter
-            // console.log(ret.items)
-            ret.items.sort(function(a,b){
-                return a.putTime < b.putTime ? 1:-1;
-            });
-
-            res.send({
-                success: true,
-                ret: ret,
-                domain: config.qiniu.domain[bucket],
-                length: ret.items.length,
-                prefix: prefix});
-
-        } else {
-            res.send({ success: false });
-            // http://developer.qiniu.com/docs/v6/api/reference/rs/list.html
-        }
+    getAllPrefix( bucket, prefix , marker, 3/*最大递归三次,即3000条数据*/, null, null, function(err,docs){
+        res.send({
+            success: true,
+            ret: docs,
+            domain: config.qiniu.domain[bucket],
+            length: docs.items.length,
+            prefix: prefix});
     });
 });
 

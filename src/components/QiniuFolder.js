@@ -11,14 +11,6 @@ let QiniuList = React.createClass({
         };
     },
 
-    componentWillMount () {
-
-    },
-
-    componentDidMount() {
-
-    },
-
     getKeyFolder : function(key){
         return key.split('/').slice(-2)[0]
     },

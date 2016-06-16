@@ -150,7 +150,7 @@ let QiniuList = React.createClass({
     },
 
     preview(e, e2,src){
-        window.open(this.props.domain + this.props.item.key )
+        window.open(this.props.domain + this.props.item.key +'?_='+ new Date().getTime() )
     },
 
     getContentPreview(type, key){

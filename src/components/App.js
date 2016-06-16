@@ -1,4 +1,4 @@
-import { Alert, Badge,Breadcrumb, Checkbox, Radio, Table, Icon, Form, Switch, Affix, Modal, InputNumber, DatePicker, Spin, Row, Col, Select, Input, Button, message} from 'antd';
+import { Alert, Badge,Breadcrumb, Checkbox,  Icon, Switch, Affix, Spin, Row, Col, Select, message} from 'antd';
 import QueueAnim from 'rc-queue-anim'
 import reqwest from 'reqwest';
 import moment from 'moment';
@@ -9,7 +9,6 @@ import QiniuPreview from './QiniuPreview';
 import QiniuUploader from './QiniuUploader';
 import QiniuBatch from './QiniuBatch';
 const Option = Select.Option;
-const ButtonGroup = Button.Group;
 let QiniuList = React.createClass({
 
     getInitialState() {
