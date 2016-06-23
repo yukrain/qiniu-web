@@ -23,21 +23,6 @@ moment.locale('zh-cn', {
 });
 let QiniuList = React.createClass({
     mixins:[ mixin ],
-    getInitialState() {
-        return {
-            fsize: "",
-            hash: "",
-
-        };
-    },
-
-    componentWillMount () {
-
-    },
-
-    componentDidMount() {
-
-    },
 
     getContentPreview(type, key){
         if(type.indexOf('image')>-1){

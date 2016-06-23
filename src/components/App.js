@@ -1,4 +1,4 @@
-import { Alert, Badge,Breadcrumb, Checkbox,  Icon, Switch, Affix, Spin, Row, Col, Select, message} from 'antd';
+import { Alert, Badge, Button, Breadcrumb, Checkbox,  Icon, Switch, Affix, Spin, Row, Col, Select, message} from 'antd';
 import QueueAnim from 'rc-queue-anim'
 import reqwest from 'reqwest';
 import moment from 'moment';
@@ -32,7 +32,8 @@ let QiniuList = React.createClass({
             },
             selectItem : {}   ,
             selectKeys:[], //多选模式 key数组
-            random: new Date().getTime()
+            random: new Date().getTime(),
+            error: false,
         };
     },
 
@@ -58,15 +59,11 @@ let QiniuList = React.createClass({
         this.fetchData('');
     },
 
-    componentDidMount() {
-
-    },
-
 
     toggleEdit(checked){
         this.setState({
             edit: checked,
-            selectItem : {}   ,
+            selectItem : {},
             selectKeys:[]
         });
     },
@@ -98,6 +95,7 @@ let QiniuList = React.createClass({
                 message.error('加载失败');
                 this.setState({
                     loading: false,
+                    error: true,
                     ret: {
                         items: [],
                         commonPrefixes: []
@@ -106,12 +104,12 @@ let QiniuList = React.createClass({
             },
             success: (result) => {
                 if(result.success){
-                    message.success('刷新成功');
                     this.setState({
                         loading: false,
                         ret: result.ret,
                         prefix: result.prefix,
                         domain: result.domain,
+                        error: false,
                         selectItem:{},  //单选模式
                         random: new Date().getTime()
 
@@ -120,6 +118,7 @@ let QiniuList = React.createClass({
                     message.error('加载失败',2);
                     this.setState({
                         loading: false,
+                        error: true,
                         ret: {
                             items: [],
                             commonPrefixes: []
@@ -150,7 +149,7 @@ let QiniuList = React.createClass({
             str = parent[1];
         }
 
-        result.unshift([<Icon type="home" />,'']);
+        result.unshift(['根目录','']);
         return result;
     },
 
@@ -189,9 +188,6 @@ let QiniuList = React.createClass({
                 });
             }
         }
-
-
-
     },
 
     render () {
@@ -231,12 +227,28 @@ let QiniuList = React.createClass({
                     <li>{this.state.date}</li>
                     <li>|</li>
                     <li>
-                        已登录
+                        <a href="https://github.com/yukrain/qiniu-web" target="_blank">  <Icon type="github" /> </a>
                     </li>
+                    <li>
+                        <a href="https://portal.qiniu.com" target="_blank">  <Icon type="cloud" /> </a>
+                    </li>
+
                 </ul>
             </div>
 
             <div  className="ant-layout-main">
+                { this.state.error ?
+                <Row >
+                    <Col className="gutter-row" offset={4} span={16}>
+                        <Alert
+                            message="配置错误"
+                            description="请检查秘钥,空间名是否正确! "
+                            type="error"
+                            showIcon
+                        />
+                    </Col>
+                </Row>
+                    :
                 <Row >
                     <Col className="gutter-row" offset={1} span={16}>
 
@@ -251,8 +263,6 @@ let QiniuList = React.createClass({
                                 {this.state.edit ?<Checkbox defaultChecked={false} onChange={this.changeCheckAll} >全选</Checkbox>: null} <Switch size="small" defaultChecked={false} onChange={this.toggleEdit} /> 批处理 | <a  onClick={this.handleClickReload} href="javascript:void(0)"><Icon type="reload" /> 刷新</a>
                             </Col>
                         </Row>
-
-
 
                         <div>
                                 {
@@ -293,12 +303,13 @@ let QiniuList = React.createClass({
                                 :
                                 <QiniuPreview key={this.state.selectItem.key} random={this.state.random}  onSuccess = {this.reloadData} bucket={this.state.bucket}  prefix={this.state.prefix}   domain={this.state.domain} item={this.state.selectItem}/>
                             }
-
                         </Affix>
 
 
                     </Col>
                 </Row>
+                }
+
             </div>
         </div>
     }

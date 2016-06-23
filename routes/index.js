@@ -88,6 +88,13 @@ router.get('/api/list',  function(req, res, next) {
     var marker =  req.query.marker || '';
 
     getAllPrefix( bucket, prefix , marker, 3/*最大递归三次,即3000条数据*/, null, null, function(err,docs){
+        if(err){
+          return res.send({
+              success: false,
+              code: err.code,
+              msg: err.error,
+          })
+        }
         res.send({
             success: true,
             ret: docs,
