@@ -9,7 +9,7 @@
 ```
 $ cd config
 $ cp config_sample.js index.js
-###配置骑牛密钥
+###配置七牛密钥
 var config = {
     qiniu: {
         ACCESS_KEY: "",
