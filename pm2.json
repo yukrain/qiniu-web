@@ -7,6 +7,9 @@
     "watch"       : false,
     "exec_interpreter" : "node",
     "node_args": "--harmony",
-    "exec_mode"        : "fork"
+    "exec_mode"        : "fork",
+    "env": {
+        "NODE_ENV": "production"
+    }
 
 }
