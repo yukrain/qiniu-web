@@ -1,7 +1,4 @@
-### Example user template template
-### Example user template
 
-# IntelliJ project files
 .idea
 *.iml
 node_modules/*
@@ -9,5 +6,5 @@ config/index.js
 public/assets
 sync-s1.sh
 out
+log
 gen
-# Created by .ignore support plugin (hsz.mobi)
