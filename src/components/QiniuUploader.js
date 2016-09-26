@@ -71,7 +71,7 @@ export default React.createClass({
 
     render () {
         let props = {
-            action: 'http://upload.qiniu.com/',
+            action: 'http://up-z2.qiniu.com/',
             multiple: true,
             data:{
                 token: this.state.token,
