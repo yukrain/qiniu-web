@@ -175,18 +175,17 @@ let QiniuList = React.createClass({
                                 <div className="file-preview-title" key="2">
                                     批量处理
                                 </div>
-                                <p className="text-bold" key="3">
+                                <p className="text-bold text-danger" key="3">
                                     {
                                        this.props.keys.length == 0? '尚未选择':  `已选择 ${this.props.keys.length} 个文件`
                                     }
                                 </p>
 
-
                                 <div  className="file-preview-buttons"  key="4"  style={{textAlign:'center'}}>
                                     <ButtonGroup >
-                                        <Button disabled={this.props.keys.length == 0}type="default" icon="delete"  onClick={this.batchDelete}>批量删除</Button>
-                                        <Button disabled={this.props.keys.length == 0}type="default" icon="edit"  onClick={this.batchMove}>批量移动</Button>
-                                        <Button disabled={this.props.keys.length == 0}type="default" icon="reload"  onClick={this.batchRefresh}>批量刷新</Button>
+                                        <Button disabled={this.props.keys.length == 0}type="default" icon="delete"  onClick={this.batchDelete}>删除</Button>
+                                        <Button disabled={this.props.keys.length == 0}type="default" icon="edit"  onClick={this.batchMove}>移动</Button>
+                                        <Button disabled={this.props.keys.length == 0}type="default" icon="reload"  onClick={this.batchRefresh}>刷新</Button>
                                     </ButtonGroup>
                                 </div>
 

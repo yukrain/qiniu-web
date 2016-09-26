@@ -15,7 +15,6 @@ var config = {
     resolve: {
         extensions:['','.js','.json','.jsx','.css','.es6','.scss','.png','.jpg','.jpeg'],
         alias: {
-            'react-dom':  path.join(NodeModules,   "/react-dom/dist/react-dom"),
             'antd':  path.join(NodeModules,   "/antd"),
             'app':   path.resolve(__dirname, "./src")
         }
@@ -39,7 +38,7 @@ var config = {
                     "plugins":[
                         "transform-decorators-legacy",
                         //"transform-es2015-modules-commonjs",
-                        "add-module-exports"]
+                        "add-module-exports",["antd"]]
                 }
                 //loaders: ['react-hot','babel?presets[]=es2015&presets[]=react&presets[]=stage-0&plugins[]=transform-decorators-legacy']
             },
@@ -61,11 +60,8 @@ var config = {
         //new webpack.optimize.CommonsChunkPlugin('vendors', 'vendors.js'),
 
         new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            "window.jQuery": "jquery",
             "React": "react",
-            "ReactDOM": "react-dom",
+            "ReactDOM": "react-dom"
         }),
         //new webpack.DefinePlugin({
         //    'process.env.NODE_ENV': '"production"'

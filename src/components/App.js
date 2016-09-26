@@ -271,7 +271,7 @@ let QiniuList = React.createClass({
                                 }
 
                                 {
-                                    this.state.ret.commonPrefixes? this.state.ret.commonPrefixes.map( folder =>{
+                                    this.state.ret.commonPrefixes ? this.state.ret.commonPrefixes.map( folder =>{
                                         return <QiniuFolder disabled={this.state.edit}  key={folder}  onClick={this.fetchData.bind(this, folder)} folder={folder} />
 
                                     }): null
@@ -283,7 +283,7 @@ let QiniuList = React.createClass({
                                         this.state.edit ?(
                                             this.state.selectKeys.indexOf(item.key)>=0
                                         ):  item.key == this.state.selectItem.key
-                                        } onClick={this.handleSelect} domain={this.state.domain} key={item.key} item={item} random={this.state.random}/>
+                                        } onClick={this.handleSelect} domain={this.state.domain} key={'item_'+item.key} item={item} random={this.state.random}/>
                                     })
 
                                 }
