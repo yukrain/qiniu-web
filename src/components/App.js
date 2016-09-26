@@ -227,9 +227,6 @@ let QiniuList = React.createClass({
                     <li>{this.state.date}</li>
                     <li>|</li>
                     <li>
-                        <a href="https://github.com/yukrain/qiniu-web" target="_blank">  <Icon type="github" /> </a>
-                    </li>
-                    <li>
                         <a href="https://portal.qiniu.com" target="_blank">  <Icon type="cloud" /> </a>
                     </li>
 
