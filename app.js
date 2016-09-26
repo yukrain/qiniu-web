@@ -60,7 +60,7 @@ app.use(logger('dev'));
 //app.use(favicon(path.join(__dirname,'public','img','favicon.ico')));
 
 app.use( function(req,res,next){
-    res.locals.debug = config.debug;
+    res.locals.debug = process.env.NODE_ENV !== 'production';
     next();
 });
 

@@ -32,7 +32,8 @@ const QINIU_REDRESH_CODE = {
 router.get('/', function(req, res) {
 
     res.render("index.html", { INIT_DATA: {
-        buckets: config.qiniu.domain
+        buckets: config.qiniu.domain,
+        debug: config.debug
     }})
 });
 
