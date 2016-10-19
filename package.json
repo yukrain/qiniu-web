@@ -11,7 +11,7 @@
     "start": "NODE_ENV=development node-dev --harmony app.js",
     "start-production": "NODE_ENV=production  node --harmony app.js",
     "webpack-dev": "node webpack.server.js",
-    "webpack-pro": "webpack --config webpack.production.js --progress --colors --display-modules --profile",
+    "webpack-pro": "export NODE_ENV=production&&webpack --config webpack.production.js --progress --colors --display-modules --profile",
     "upload-s1": "sh ./sync-s1.sh"
   },
   "dependencies": {

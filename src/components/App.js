@@ -56,12 +56,10 @@ let QiniuList = React.createClass({
     },
 
     componentWillMount () {
-        console.log(location.hash)
-        var bucket = decodeURIComponent(location.hash.split('#')[1].split(':')[0]);
-        var prefix = decodeURIComponent(location.hash.split('#')[1].split(':')[1]);
-        this.setState({
-            bucket: bucket
-        }, this.fetchData( prefix))
+        var bucket = decodeURIComponent((location.hash.split('#')[1] || ':').split(':')[0]);
+        var prefix = decodeURIComponent((location.hash.split('#')[1] || ':').split(':')[1]);
+
+        this.fetchData( prefix || '', bucket || this.state.bucket)
         
     },
 
@@ -86,7 +84,7 @@ let QiniuList = React.createClass({
         this.fetchData(this.state.prefix);
     },
 
-    fetchData(prefix = ''){
+    fetchData(prefix = '', bucket = this.state.bucket){
         this.setState({loading: true  });
         reqwest({
             url:'/api/list',
@@ -113,6 +111,7 @@ let QiniuList = React.createClass({
                 if(result.success){
                     this.setState({
                         loading: false,
+                        bucket: bucket,
                         ret: result.ret,
                         prefix: result.prefix,
                         domain: result.domain,
@@ -161,12 +160,7 @@ let QiniuList = React.createClass({
     },
 
     handleChangeBucket(value){
-        this.setState({
-            bucket: value
-        },()=>{
-            this.fetchData('');
-        });
-
+       this.fetchData('', value);
 
     },
 
