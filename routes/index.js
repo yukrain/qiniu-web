@@ -97,6 +97,7 @@ router.get('/api/list',  function(req, res, next) {
               msg: err.error,
           })
         }
+        docs.items = docs.items.sort(function(a,b){return a.putTime < b.putTime? 1: -1;})
         res.send({
             success: true,
             ret: docs,

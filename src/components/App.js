@@ -56,7 +56,13 @@ let QiniuList = React.createClass({
     },
 
     componentWillMount () {
-        this.fetchData('');
+        console.log(location.hash)
+        var bucket = decodeURIComponent(location.hash.split('#')[1].split(':')[0]);
+        var prefix = decodeURIComponent(location.hash.split('#')[1].split(':')[1]);
+        this.setState({
+            bucket: bucket
+        }, this.fetchData( prefix))
+        
     },
 
 
@@ -103,6 +109,7 @@ let QiniuList = React.createClass({
                 })
             },
             success: (result) => {
+                location.hash = encodeURIComponent(this.state.bucket) + ':' + encodeURIComponent(prefix);
                 if(result.success){
                     this.setState({
                         loading: false,
