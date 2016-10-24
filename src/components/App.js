@@ -84,13 +84,15 @@ let QiniuList = React.createClass({
         this.fetchData(this.state.prefix);
     },
 
+
     fetchData(prefix = '', bucket = this.state.bucket){
+        // console.log(prefix, bucket);
         this.setState({loading: true  });
         reqwest({
             url:'/api/list',
             method: 'get',
             data: {
-                bucket: this.state.bucket,
+                bucket: bucket,
                 prefix:  prefix
             },
             crossOrigin: true,
@@ -194,8 +196,9 @@ let QiniuList = React.createClass({
     render () {
         const breadcrumbArray =   this.getAllParentsPrefixArray(this.state.prefix);
 
+
         const breadcrumb = breadcrumbArray.map(item=>{
-            return  <Breadcrumb.Item href="javascript:void(0)" key={item[0]} onClick={this.fetchData.bind(this, item[1])}>{item[0]}</Breadcrumb.Item>
+            return  <Breadcrumb.Item href="javascript:void(0)" key={item[0]} onClick={this.fetchData.bind(this, item[1], this.state.bucket)}>{item[0]}</Breadcrumb.Item>
         });
 
         let buckets = [];
@@ -258,7 +261,7 @@ let QiniuList = React.createClass({
 
                             </Col>
                             <Col span={9}  style={{paddingLeft:10,textAlign:'right'}}>
-                                {this.state.edit ?<Checkbox defaultChecked={false} onChange={this.changeCheckAll} >全选</Checkbox>: null} <Switch size="small" defaultChecked={false} onChange={this.toggleEdit} /> 批处理 | <a  onClick={this.handleClickReload} href="javascript:void(0)"><Icon type="reload" /> 刷新</a>
+                                {this.state.edit ? <Checkbox defaultChecked={false} onChange={this.changeCheckAll} >全选</Checkbox>: null} <Switch size="small" defaultChecked={false} onChange={this.toggleEdit} /> 批处理 | <a  onClick={this.handleClickReload} href="javascript:void(0)"><Icon type="reload" /> 刷新</a>
                             </Col>
                         </Row>
 
