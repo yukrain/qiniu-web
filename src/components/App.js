@@ -55,6 +55,33 @@ let QiniuList = React.createClass({
         });
     },
 
+    handleSelectAll(){
+        var selectKeys = this.state.selectKeys;
+        this.state.ret.items.map(item=>{
+            let index = selectKeys.indexOf(item.key);
+            if( index == -1){
+                selectKeys.push(item.key);
+            }
+        });
+        this.setState({
+            selectKeys
+        });
+    },
+
+    handleCancelAll(){
+
+        var selectKeys = this.state.selectKeys;
+        this.state.ret.items.map(item=>{
+            let index = selectKeys.indexOf(item.key);
+            if( index > -1){
+                selectKeys.splice(index, 1);
+            }
+        });
+        this.setState({
+            selectKeys
+        });
+    },
+
     componentWillMount () {
         var bucket = decodeURIComponent((location.hash.split('#')[1] || ':').split(':')[0]);
         var prefix = decodeURIComponent((location.hash.split('#')[1] || ':').split(':')[1]);
@@ -261,19 +288,23 @@ let QiniuList = React.createClass({
 
                             </Col>
                             <Col span={9}  style={{paddingLeft:10,textAlign:'right'}}>
-                                {this.state.edit ? <Checkbox defaultChecked={false} onChange={this.changeCheckAll} >全选</Checkbox>: null} <Switch size="small" defaultChecked={false} onChange={this.toggleEdit} /> 批处理 | <a  onClick={this.handleClickReload} href="javascript:void(0)"><Icon type="reload" /> 刷新</a>
+                                {this.state.edit ? <span>
+                                    <a  onClick={this.handleSelectAll} href="javascript:void(0)">本页全选</a>
+                                    <span> | </span>
+                                    <a  onClick={this.handleCancelAll} href="javascript:void(0)">清除选择</a>
+                                </span> : null} <Switch size="small" defaultChecked={false} onChange={this.toggleEdit} /> 批处理 | <a  onClick={this.handleClickReload} href="javascript:void(0)"><Icon type="reload" /> 刷新</a>
                             </Col>
                         </Row>
 
                         <div>
                                 {
                                     this.state.prefix == '' ?  <QiniuFolder key="1" disabled folder={this.state.bucket} type="open"/>:
-                                        <QiniuFolder disabled={this.state.edit} key="1" folder={'返回上级'} onClick={this.fetchFather} type="open"/>
+                                        <QiniuFolder key="1" folder={'返回上级'} onClick={this.fetchFather} type="open"/>
                                 }
 
                                 {
                                     this.state.ret.commonPrefixes ? this.state.ret.commonPrefixes.map( folder =>{
-                                        return <QiniuFolder disabled={this.state.edit}  key={folder}  onClick={this.fetchData.bind(this, folder)} folder={folder} />
+                                        return <QiniuFolder  key={folder}  onClick={this.fetchData.bind(this, folder)} folder={folder} />
 
                                     }): null
 

@@ -156,7 +156,7 @@ let QiniuList = React.createClass({
     getContentPreview(type, key){
         if(type.indexOf('image')>-1){
             return <div>
-                <img src={ this.props.domain + this.props.item.key+'?imageMogr2/thumbnail/!300x300r/quality/100&_='+this.props.random } alt=""/>
+                <img src={ this.props.domain + this.props.item.key+'?imageMogr2/thumbnail/!300>/quality/100&_='+this.props.random } alt=""/>
                 </div>
         }else{
             let myclass = this.getFileIconClass(type)

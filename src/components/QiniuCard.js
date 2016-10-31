@@ -26,7 +26,7 @@ let QiniuList = React.createClass({
 
     getContentPreview(type, key){
         if(type.indexOf('image')>-1){
-            return <img src={this.props.domain + this.props.item.key + '?imageMogr2/gravity/Center/thumbnail/!100x100r/crop/100x100/quality/100&_='+this.props.random} alt=""/>
+            return <img src={this.props.domain + this.props.item.key + '?imageMogr2/gravity/Center/thumbnail/!100>/crop/100x100/quality/100&_='+this.props.random} alt=""/>
         }else{
             let myclass = this.getFileIconClass(type)
             return <div className="qiniu-card-preview-icon"> <i className={'iconfont ' + myclass + ' card-icon'}></i> <p> { this.getKeyFilename(this.props.item.key) }</p></div>

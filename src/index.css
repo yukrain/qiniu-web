@@ -262,14 +262,21 @@ body{
 .qiniu-card-preview{
     width: 100px;
     height: 100px;
+    line-height: 100px;
+    font-size: 0;
+    background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+CjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2ZkZmRmZCI+PC9yZWN0Pgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjY2NjIj48L3JlY3Q+CjxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSI1IiBoZWlnaHQ9IjUiIGZpbGw9IiNjY2MiPjwvcmVjdD4KPC9zdmc+");
 }
 .qiniu-card-preview img {
     max-width: 100%;
     height: auto;
     box-sizing: border-box;
-    border: 0;
+    border: none;
     vertical-align: middle;
+
+  
 }
+
+
 .qiniu-card-filesize{
     color: #999;
 }
@@ -324,21 +331,23 @@ body{
 }
 
 .qiniu-card-preview-icon{
-    padding-top: 10px;
     color: #659f13;
+    padding-top: 18px;
     height: 100px;
     background-color: #fbfbfb;
     border-radius: 3px;
+    line-height: 30px;
 }
 .qiniu-card .iconfont{
     font-size: 30px;
 }
 .qiniu-card-preview-icon p{
-    margin-top: 10px;
+    margin-top: 4px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     color: #43680c;
+    font-size: 12px;
 }
 
 
@@ -367,16 +376,22 @@ body{
     word-wrap: break-word;
     overflow: hidden;
     font-size: 0;
+
 }
 .file-preview-content p{
     margin-top: 10px;
     font-size: 12px;
 }
 .file-preview-content img{
-    width:100%;
+    max-width:100%;
     margin: 0;
     padding: 0;
+      background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCI+CjxyZWN0IHdpZHRoPSIxMCIgaGVpZ2h0PSIxMCIgZmlsbD0iI2ZkZmRmZCI+PC9yZWN0Pgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjY2NjIj48L3JlY3Q+CjxyZWN0IHg9IjUiIHk9IjUiIHdpZHRoPSI1IiBoZWlnaHQ9IjUiIGZpbGw9IiNjY2MiPjwvcmVjdD4KPC9zdmc+");
+
 }
+
+
+
 .file-preview-content .file-preview-icon{
     padding: 30px 0;
 }
