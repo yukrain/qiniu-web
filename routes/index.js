@@ -59,7 +59,7 @@ function getAllPrefix(bucket, prefix , marker, maxTimes, times, data, callback){
         };
     }
 
-    _qiniu.rsf.listPrefix(bucket, prefix , marker, null/*limit*/, '/', function(err, ret) {
+    _qiniu.rsf.listPrefix(bucket, encodeURIComponent(prefix) , marker, null/*limit*/, '/', function(err, ret) {
         if (!err) {
 
             if(ret.commonPrefixes){
